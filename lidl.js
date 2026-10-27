@@ -1728,16 +1728,22 @@ Return ONE JSON OBJECT with the single key "tags", in the order you located the 
 
     const lastSeen = nowStamp();
 
+    // Loaded from GitHub by lidl.loader.js, Mozenda never fills the
+    // placeholders in this file, so the loader passes the filled inputs in
+    // window.MOZENDA_INPUTS. Pasted into the agent directly, that object is
+    // absent and the placeholders below are filled as before.
+    const agentInputs = (typeof window !== 'undefined' && window.MOZENDA_INPUTS) || {};
+
     // Optional market pin. Add a Country input to the Mozenda agent to
     // use it; an unfilled placeholder is ignored.
-    const pinnedCountry = normalizeCountry(readAgentInput('%Country%') || CONFIG.DEFAULT_COUNTRY);
+    const pinnedCountry = normalizeCountry(readAgentInput('Country' in agentInputs ? agentInputs.Country : '%Country%') || CONFIG.DEFAULT_COUNTRY);
     if (pinnedCountry) console.log(`Market pinned to ${pinnedCountry}`);
     const pinnedCurrency = COUNTRY_CURRENCY[pinnedCountry] || '';
 
     // ONE image per run. The input is still split on "|" because Mozenda
     // has delivered a pipe-separated list before; anything past the first
     // link is ignored rather than silently changing what was read.
-    const imagesInput = readAgentInput('%imageURL%');
+    const imagesInput = readAgentInput('imageURL' in agentInputs ? agentInputs.imageURL : '%imageURL%');
     const links = imagesInput.split('|').map(url => url.trim()).filter(url => url);
     if (links.length > 1) {
       console.warn(`The imageURL input carried ${links.length} links - only the first is read`);
