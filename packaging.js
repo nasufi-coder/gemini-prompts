@@ -1196,8 +1196,14 @@ EXAMPLE - a bottled mineral water. No ingredient declaration, and the analysis t
     // Main
     // ---------------------------------------------------------------------
 
+    // Loaded from GitHub by packaging.loader.js, Mozenda never fills the
+    // placeholder in this file, so the loader passes the filled input in
+    // window.MOZENDA_INPUTS. Pasted into the agent directly, that object is
+    // absent and the placeholder below is filled as before.
+    const agentInputs = (typeof window !== 'undefined' && window.MOZENDA_INPUTS) || {};
+
     // ONE image per row, from the imageURL field.
-    const imageUrl = '%imageURL%'.trim();
+    const imageUrl = String('imageURL' in agentInputs ? agentInputs.imageURL : '%imageURL%').trim();
 
     const result = await findProductInfo(imageUrl, apiKeyValue);
 
